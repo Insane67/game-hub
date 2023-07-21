@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import apiClient,{CanceledError} from "../services/api-client";
+import apiClient, { CanceledError } from "../services/api-client";
 
-export interface Platform{
-  id:number;
-  name:string;
-  slug:string;
+export interface Platform {
+  id: number;
+  name: string;
+  slug: string;
 }
-
 
 export interface Game {
   id: number;
   name: string;
-  background_image:string;
-  parent_platforms:{platform:Platform}[]
+  background_image: string;
+  parent_platforms: { platform: Platform }[];
+  metacritic: number;
 }
 
 interface fetchGamesResponse {
@@ -30,11 +30,12 @@ const useGames = () => {
       .get<fetchGamesResponse>("/games", { signal: controller.signal })
       .then((res) => setGames(res.data.results))
       .catch((err) => {
-        if(err instanceof CanceledError) return;
-        setError(err.message)});
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+      });
 
     return () => controller.abort();
-  },[]);
+  }, []);
 
   return { games, error };
 };
